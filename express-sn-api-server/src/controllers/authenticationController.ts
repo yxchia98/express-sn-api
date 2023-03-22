@@ -24,17 +24,29 @@ const validateUser = async (req: Request, res: Response) => {
         return;
     }
     const userEmail: string = <string>req.body.email;
+    // POST using basic auth
+    // const validateUserConfig: AxiosRequestConfig = {
+    //     method: "get",
+    //     url: `${process.env.SN_INSTANCE_URL}api/now/table/sys_user?sysparm_query=email%3D${userEmail}&sysparm_fields=sys_id&sysparm_limit=1`,
+    //     headers: {
+    //         Accept: "application/json",
+    //         "Content-Type": "application/json",
+    //         Authorization:
+    //             "Basic " +
+    //             Buffer.from(
+    //                 `${process.env.SERVICE_ACCOUNT_USER}:${process.env.SERVICE_ACCOUNT_PASSWORD}`
+    //             ).toString("base64"),
+    //     },
+    // };
+
+    // get using access token and OAuth2.0
     const validateUserConfig: AxiosRequestConfig = {
         method: "get",
         url: `${process.env.SN_INSTANCE_URL}api/now/table/sys_user?sysparm_query=email%3D${userEmail}&sysparm_fields=sys_id&sysparm_limit=1`,
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            Authorization:
-                "Basic " +
-                Buffer.from(
-                    `${process.env.SERVICE_ACCOUNT_USER}:${process.env.SERVICE_ACCOUNT_PASSWORD}`
-                ).toString("base64"),
+            Authorization: `Bearer ${process.env.OAUTH_ACCESS_TOKEN}`,
         },
     };
     const validateUserResponse: AxiosResponse<ValidateUserSNAPIResponse> = await axios(
